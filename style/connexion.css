@@ -76,3 +76,51 @@ p a {
 p a:hover {
     text-decoration: underline; 
 }
+
+/* Blog */
+.article-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.article-title-custom {
+    color: #007bff;
+}
+
+.article-content-custom, .article-date-custom {
+    margin-bottom: 10px;
+}
+
+.delete-button-custom, .form-submit-custom {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.form-submit-custom {
+    background-color: #007bff;
+    margin-top: 10px;
+}
+
+.form-label-custom {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.form-input-custom, .form-textarea-custom {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

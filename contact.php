@@ -3,47 +3,57 @@ session_start();
 
 require_once 'database.php';
 
-class Contact {
+class Contact
+{
     private $database;
 
-    public function __construct(Database $database) {
+    public function __construct(Database $database)
+    {
         $this->database = $database;
     }
 
-    public function insertMessage($userEmail, $userMessage) {
+    public function insertMessage($userEmail, $userMessage)
+    {
         return $this->database->insertMessage($userEmail, $userMessage);
     }
 
-    public function getMessagesHTML() {
-        $resultat = $this->database->getMessages();
-    
-        if ($resultat === "") {
-            // Si $resultat est une chaîne vide, il y a une erreur, affichez le message d'erreur
-            return '';
-        }
-    
-        $messagesHTML = "";
-    
-        while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
-            $messagesHTML .= "<div class='message-container'>";
-            $messagesHTML .= "<p class='user-email'><strong></strong> " . $row["email"] . "</p>";
-            $messagesHTML .= "<p class='user-message'><strong></strong> " . $row["message"] . "</p>";
-            $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . $row["date_mess"] . "</p>";
-    
-            // Afficher le bouton "Supprimer" uniquement pour l'administrateur
-            $messagesHTML .= "<form method='post' action=''>
-                                <input type='hidden' name='messageIdToDelete' value='{$row["id_mess"]}'>
-                                <button type='submit'>Supprimer</button>
-                              </form>";
-    
-            $messagesHTML .= "</div>";
-            $messagesHTML .= "<hr class='message-divider'>";
-        }
-    
-        return $messagesHTML;
+    public function getMessagesHTML()
+{
+    $resultat = $this->database->getMessages();
+
+    if ($resultat === "") {
+        return '';
     }
 
-    public function deleteMessage($messageId) {
+    $messagesHTML = "";
+
+    // Ajoutez des messages de débogage ici
+    if (!($resultat instanceof PDOStatement)) {
+        die("La requête ne renvoie pas un objet PDOStatement valide. Erreur: " . print_r($resultat, true));
+    }
+
+    while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
+        $messagesHTML .= "<div class='message-container'>";
+        $messagesHTML .= "<p class='user-email'><strong>Email:</strong> " . $row["email"] . "</p>";
+        $messagesHTML .= "<p class='user-message'><strong>Message:</strong> " . $row["message"] . "</p>";
+        $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . $row["date_mess"] . "</p>";
+
+        if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+            $messagesHTML .= "<form method='post' action=''>
+                            <input type='hidden' name='messageIdToDelete' value='{$row["id_mess"]}'>
+                            <button type='submit' class='delete-button'>Supprimer</button>
+                          </form>";
+        }
+
+        $messagesHTML .= "</div>";
+        $messagesHTML .= "<hr class='message-divider'>";
+    }
+
+    return $messagesHTML;
+}
+
+    public function deleteMessage($messageId)
+    {
         return $this->database->deleteMessage($messageId);
     }
 }
@@ -51,11 +61,9 @@ class Contact {
 $database = new Database("localhost", "root", "", "portfoliophp");
 $contact = new Contact($database);
 
-// Traitement du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userMessage'])) {
     $userMessage = $_POST['userMessage'];
 
-    // Si l'utilisateur est connecté, utilisez son ID d'utilisateur
     if (isset($_SESSION['user_email'])) {
         $insertResult = $contact->insertMessage($_SESSION['user_email'], $userMessage);
     } else {
@@ -108,22 +116,21 @@ $database->closeConnection();
         <h1>Contactez-moi</h1>
 
         <?php
-        echo '<form method="post" action="">
+        echo '<form method="post" action="" class="contact-form">
             <label for="userEmail">Votre adresse e-mail :</label>
             <input type="email" id="userEmail" name="userEmail" required>
             <label for="userMessage">Votre message :</label>
             <textarea id="userMessage" name="userMessage" rows="4" cols="50" required></textarea>
-            <button type="submit">Envoyer</button>
+            <button type="submit" class="submit-button">Envoyer</button>
         </form>';
         ?>
 
         <div id="messagesContainer">
             <?php
             if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
-                echo '<p style="color: blue;">En tant qu\'administrateur, vous pouvez supprimer les messages.</p>';
+                echo '<p class="admin-info">En tant qu\'administrateur, vous pouvez supprimer les messages.</p>';
             }
             echo $messagesHTML;
-            
             ?>
         </div>
     </div>

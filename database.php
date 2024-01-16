@@ -55,34 +55,25 @@ class Database
     }
 
     public function getMessages()
-    {
+{
+    try {
         if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
             $resultat = $this->conn->query("SELECT contact.message, contact.date_mess, contact.mail as email, contact.id_mess
                                        FROM contact");
 
-            $messagesHTML = "";
-
-            while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
-                $messagesHTML .= "<div class='message-container'>";
-                $messagesHTML .= "<p class='user-email'><strong></strong> " . $row["email"] . "</p>";
-                $messagesHTML .= "<p class='user-message'><strong></strong> " . $row["message"] . "</p>";
-                $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . $row["date_mess"] . "</p>";
-
-                // Afficher le bouton "Supprimer" uniquement pour l'administrateur
-                $messagesHTML .= "<form method='post' action=''>
-                                <input type='hidden' name='messageIdToDelete' value='{$row["id_mess"]}'>
-                                <button type='submit'>Supprimer</button>
-                              </form>";
-
-                $messagesHTML .= "</div>";
-                $messagesHTML .= "<hr class='message-divider'>";
+            // Ajoutez ces messages de débogage
+            if (!$resultat) {
+                die("Erreur dans la requête SQL : " . print_r($this->conn->errorInfo(), true));
             }
 
-            return $messagesHTML;
+            return $resultat; // Retournez directement le résultat sans vérifier son type
         } else {
             return "";
         }
+    } catch (PDOException $e) {
+        die("Erreur lors de la récupération des messages : " . $e->getMessage());
     }
+}
     public function deleteArticle($articleId)
     {
         try {

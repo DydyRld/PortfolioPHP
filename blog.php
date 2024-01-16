@@ -62,25 +62,25 @@ session_start();
     foreach ($articlesFromDB as $article) {
         $id = $article->getId();
         echo "<div class='article-container'>";
-        echo "<h2 class='article-title'>{$article->getTitle()}</h2>";
-        echo "<p class='article-content'>{$article->getContent()}</p>";
-        echo "<p class='article-date'>Date de publication: {$article->getDatePublished()}</p>";
+        echo "<h2 class='article-title-custom'>{$article->getTitle()}</h2>";
+        echo "<p class='article-content-custom'>{$article->getContent()}</p>";
+        echo "<p class='article-date-custom'>Date de publication: {$article->getDatePublished()}</p>";
 
         // Ajouter un formulaire de suppression pour chaque article
         if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
             echo "<form method='post' action=''>
             <input type='hidden' name='id' value='{$id}'>
-            <button type='submit' name='delete_article' class='delete-button'>Supprimer</button>
+            <button type='submit' name='delete_article' class='delete-button-custom'>Supprimer</button>
         </form>";
 
             // Formulaire de modification
             echo "<form method='post' action=''>
             <input type='hidden' name='update_id' value='{$id}'>
-            <label for='update_title'>Nouveau titre:</label>
-            <input type='text' id='update_title' name='update_title' required>
-            <label for='update_content'>Nouveau contenu:</label>
-            <textarea id='update_content' name='update_content' required></textarea>
-            <input type='submit' value='Modifier'>
+            <label for='update_title' class='form-label-custom'>Nouveau titre:</label>
+            <input type='text' id='update_title' name='update_title' required class='form-input-custom'>
+            <label for='update_content' class='form-label-custom'>Nouveau contenu:</label>
+            <textarea id='update_content' name='update_content' required class='form-textarea-custom'></textarea>
+            <input type='submit' value='Modifier' class='form-submit-custom'>
         </form>";
         }
 
@@ -90,13 +90,13 @@ session_start();
     // Formulaire pour ajouter de nouveaux articles
     if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
         echo "<form class='custom-form' method='post' action=''>
-            <label for='title' class='form-label'>Titre:</label>
-            <input type='text' id='title' name='title' class='form-input' required><br>
+            <label for='title' class='form-label-custom'>Titre:</label>
+            <input type='text' id='title' name='title' class='form-input-custom' required><br>
 
-            <label for='content' class='form-label'>Contenu:</label>
-            <textarea id='content' name='content' class='form-textarea' required></textarea><br>
+            <label for='content' class='form-label-custom'>Contenu:</label>
+            <textarea id='content' name='content' class='form-textarea-custom' required></textarea><br>
 
-            <input type='submit' value='Ajouter' class='form-submit'>
+            <input type='submit' value='Ajouter' class='form-submit-custom'>
         </form>";
     }
     ?>
