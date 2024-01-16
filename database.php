@@ -17,6 +17,22 @@ class Database
             die("Erreur de connexion à la base de données : " . $e->getMessage());
         }
     }
+    public function insertArticle(Article $article)
+    {
+        try {
+            $title = $article->getTitle();
+            $content = $article->getContent();
+
+            $insertQuery = "INSERT INTO articles (title, content, date_published) VALUES (?, ?, NOW())";
+            $stmt = $this->conn->prepare($insertQuery);
+            $stmt->bindParam(1, $title, PDO::PARAM_STR);
+            $stmt->bindParam(2, $content, PDO::PARAM_STR);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            die("Erreur d'insertion de l'article : " . $e->getMessage());
+        }
+    }
 
     public function insertMessage($userEmail, $userMessage)
     {
@@ -39,34 +55,60 @@ class Database
     }
 
     public function getMessages()
-{
-    if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
-        $resultat = $this->conn->query("SELECT contact.message, contact.date_mess, contact.mail as email, contact.id_mess
+    {
+        if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+            $resultat = $this->conn->query("SELECT contact.message, contact.date_mess, contact.mail as email, contact.id_mess
                                        FROM contact");
 
-        $messagesHTML = "";
+            $messagesHTML = "";
 
-        while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
-            $messagesHTML .= "<div class='message-container'>";
-            $messagesHTML .= "<p class='user-email'><strong></strong> " . $row["email"] . "</p>";
-            $messagesHTML .= "<p class='user-message'><strong></strong> " . $row["message"] . "</p>";
-            $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . $row["date_mess"] . "</p>";
+            while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
+                $messagesHTML .= "<div class='message-container'>";
+                $messagesHTML .= "<p class='user-email'><strong></strong> " . $row["email"] . "</p>";
+                $messagesHTML .= "<p class='user-message'><strong></strong> " . $row["message"] . "</p>";
+                $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . $row["date_mess"] . "</p>";
 
-            // Afficher le bouton "Supprimer" uniquement pour l'administrateur
-            $messagesHTML .= "<form method='post' action=''>
+                // Afficher le bouton "Supprimer" uniquement pour l'administrateur
+                $messagesHTML .= "<form method='post' action=''>
                                 <input type='hidden' name='messageIdToDelete' value='{$row["id_mess"]}'>
                                 <button type='submit'>Supprimer</button>
                               </form>";
 
-            $messagesHTML .= "</div>";
-            $messagesHTML .= "<hr class='message-divider'>";
-        }
+                $messagesHTML .= "</div>";
+                $messagesHTML .= "<hr class='message-divider'>";
+            }
 
-        return $messagesHTML;
-    } else {
-        return ""; 
+            return $messagesHTML;
+        } else {
+            return "";
+        }
     }
-}
+    public function deleteArticle($articleId)
+    {
+        try {
+            $deleteQuery = "DELETE FROM articles WHERE id = ?";
+            $stmt = $this->conn->prepare($deleteQuery);
+            $stmt->bindParam(1, $articleId, PDO::PARAM_INT);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            die("Erreur de suppression de l'article : " . $e->getMessage());
+        }
+    }
+    public function updateArticle($articleId, $newTitle, $newContent)
+    {
+        try {
+            $updateQuery = "UPDATE articles SET title = ?, content = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($updateQuery);
+            $stmt->bindParam(1, $newTitle, PDO::PARAM_STR);
+            $stmt->bindParam(2, $newContent, PDO::PARAM_STR);
+            $stmt->bindParam(3, $articleId, PDO::PARAM_INT);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            die("Erreur lors de la mise à jour de l'article : " . $e->getMessage());
+        }
+    }
 
     public function deleteMessage($messageId)
     {

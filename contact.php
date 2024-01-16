@@ -16,30 +16,30 @@ class Contact {
 
     public function getMessagesHTML() {
         $resultat = $this->database->getMessages();
-
-        if (is_string($resultat)) {
-            // Si $resultat est une chaîne, il y a une erreur, affichez le message d'erreur
-            return '' . $resultat . '</p>';
+    
+        if ($resultat === "") {
+            // Si $resultat est une chaîne vide, il y a une erreur, affichez le message d'erreur
+            return '';
         }
-
+    
         $messagesHTML = "";
-
+    
         while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
             $messagesHTML .= "<div class='message-container'>";
             $messagesHTML .= "<p class='user-email'><strong></strong> " . $row["email"] . "</p>";
             $messagesHTML .= "<p class='user-message'><strong></strong> " . $row["message"] . "</p>";
             $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . $row["date_mess"] . "</p>";
-
+    
             // Afficher le bouton "Supprimer" uniquement pour l'administrateur
             $messagesHTML .= "<form method='post' action=''>
                                 <input type='hidden' name='messageIdToDelete' value='{$row["id_mess"]}'>
                                 <button type='submit'>Supprimer</button>
                               </form>";
-
+    
             $messagesHTML .= "</div>";
             $messagesHTML .= "<hr class='message-divider'>";
         }
-
+    
         return $messagesHTML;
     }
 
@@ -69,15 +69,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userMessage'])) {
     }
 
     if ($insertResult) {
-        // Rafraîchir la liste des messages
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
+        echo '<div style="color: green;">Votre message a été envoyé avec succès.</div>';
     } else {
-        echo '<p style="color: red;">Erreur lors de l\'insertion du message.</p>';
+        echo '<p style="color: red;">Erreur lors de l\'insertion du message. $insertResult : ' . var_export($insertResult, true) . '</p>';
     }
 }
 
-// Traitement de la suppression de message
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['messageIdToDelete']) && isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
     $messageIdToDelete = $_POST['messageIdToDelete'];
     $success = $contact->deleteMessage($messageIdToDelete);

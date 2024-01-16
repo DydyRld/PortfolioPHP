@@ -44,6 +44,18 @@ session_start();
         exit;
     }
 
+    // Traitement du formulaire de modification
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_title']) && isset($_POST['update_content'])) {
+        $articleIdToUpdate = $_POST['update_id'];
+        $updatedTitle = $_POST['update_title'];
+        $updatedContent = $_POST['update_content'];
+        $database->updateArticle($articleIdToUpdate, $updatedTitle, $updatedContent);
+
+        // Rafraîchir la page pour refléter la modification
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
+    }
+
     // Afficher les articles existants
     $articlesFromDB = $database->getArticlesFromDatabase();
 
@@ -59,6 +71,16 @@ session_start();
             echo "<form method='post' action=''>
             <input type='hidden' name='id' value='{$id}'>
             <button type='submit' name='delete_article' class='delete-button'>Supprimer</button>
+        </form>";
+
+            // Formulaire de modification
+            echo "<form method='post' action=''>
+            <input type='hidden' name='update_id' value='{$id}'>
+            <label for='update_title'>Nouveau titre:</label>
+            <input type='text' id='update_title' name='update_title' required>
+            <label for='update_content'>Nouveau contenu:</label>
+            <textarea id='update_content' name='update_content' required></textarea>
+            <input type='submit' value='Modifier'>
         </form>";
         }
 

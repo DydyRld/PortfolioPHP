@@ -29,8 +29,8 @@ session_start();
                 <div id="socials-container">
                     <img src="./assets/linkedin.png" alt="Mon compte Linkedin" class="icon"
                         onclick="location.href='https://www.linkedin.com/in/dylan-rolland-115871293/'" />
-                    <img src="./assets/instagram.png" alt="Mon instagram" class="icon"
-                        onclick="location.href='https://www.instagram.com/dylxnrld/?next=%2F'" />
+                    <img src="./assets/github.png" alt="Mon Github" class="icon"
+                        onclick="location.href='https://github.com/DydyRld'" />
                 </div>
             </div>
         </div>

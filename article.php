@@ -21,6 +21,10 @@ class Article
     {
         return $this->title;
     }
+    public function setContent($content)
+{
+    $this->content = $content;
+}
 
     public function getContent()
     {
