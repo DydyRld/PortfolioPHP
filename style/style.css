@@ -1,0 +1,387 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+p{
+    color: rgb(85, 85, 85);
+}
+
+a, .btn{
+    transition: all 300ms ease;
+}
+
+nav, .nav-links{
+    display: flex;
+}
+
+nav{
+    justify-content: space-around;
+    align-items: center;
+    height: 17vh;
+}
+
+.nav-links{
+    gap: 2rem;
+    list-style: none;
+    font-size: 1.5rem;
+    }
+
+a{
+    color: black;
+    text-decoration: none;
+    text-decoration-color:white ;
+}
+
+a:hover{
+    color: gray;
+    text-decoration: underline;
+    text-underline-offset: 1rem;
+    text-decoration-color: rgb(181,181,181);
+}
+
+.logo{
+    font-size: 2rem;
+}
+
+.logo:hover{
+    cursor: default;
+}
+
+#profile .imgpdp {
+    max-width: 60%;
+    height: auto;
+    border-radius: 50px;
+}
+
+section{
+    padding-top: 4vh;
+    margin: 0 10rem;
+    box-sizing: border-box;
+    min-height: fit-content;
+}
+
+.profil{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.section-pic{
+    width: 35%;
+}
+
+.section-text{
+    align-self: center;
+    text-align: center;
+}
+
+.section-text p{
+    font-weight: 600;
+}
+
+.txtp1{
+    font-size: 1.75rem;
+    text-align: center;
+}
+
+.title{
+    font-size: 3rem;
+    text-align: center;
+}
+
+.btn-container{
+    margin-top: 5%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn{
+    font-weight: 600;
+    transition: all 300ms ease;
+    padding: 1rem;
+    width: 8rem;
+    border-radius: 2rem;
+}
+
+.buttoncv{
+    border: rgb(53, 53, 53) 0.1rem solid;
+}
+.buttoncv:hover{
+    cursor: pointer;
+    color: white;
+    background: rgb(0, 0, 0);
+}
+#socials-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+  
+  .icon {
+    cursor: pointer;
+    height: 3rem;
+  }
+  
+
+/* Compétences */
+
+#competences {
+    padding: 20px;
+}
+
+.divcompetence {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+#competences {
+    padding: 50px;
+}
+
+.txt-competence h1  {
+    padding-top: 5%;
+    text-align: center;
+    font-size: xx-large;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.container-competences {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.divcompetence p {
+    border: rgb(53, 53, 53) 0.1rem solid;
+    color: black;
+    padding: 10px;
+    margin: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px;
+    transition: background-color 0.3s ease;
+    
+}
+.divcompetence p:hover {
+    background-color: black; 
+    color: #fff; 
+    transform: translateY(-3px); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.h1admin {
+    text-align: center;
+    margin-top: 50px; 
+}
+
+.adminform {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.adminlabel {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.admininput {
+    margin-bottom: 16px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+.adminbutton {
+    padding: 12px 20px;
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.adminbutton:hover {
+    background-color: #fff;
+    color: #000;
+}
+.adminbutton.delete {
+    background-color: #ff3333;
+    border-color: #ff3333;
+    color: #fff;
+}
+
+.adminbutton.delete:hover {
+    background-color: #fff;
+    color: #ff3333;
+}
+
+.custom-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+.form-submit {
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+.article-container {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.article-title {
+    font-size: 24px;
+    color: #333;
+}
+
+.article-content {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #666;
+}
+
+.article-date {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* Styles pour les messages d'erreur */
+.error-message {
+    color: red;
+}
+
+/* Projets Card */
+.container-projets {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.projet-card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 10px;
+    width: 300px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.projet-card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.projet-header {
+    background-color: black;
+    color: #fff;
+    padding: 10px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    text-align: center;
+}
+
+.projet-titre {
+    margin: 0;
+}
+
+.projet-body {
+    padding: 15px;
+    text-align: center;
+}
+
+.projet-description {
+    margin: 0;
+}
+
+.projet-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.projet-card:hover .projet-image {
+    opacity: 0.7;
+}
+/* Contact */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+.message-heading {
+    color: #333;
+}
+
+.message-container {
+    margin-bottom: 20px;
+}
+
+.user-email,
+.user-message,
+.message-date {
+    margin: 0;
+}
+
+.message-divider {
+    border: 1px solid #ddd;
+}
+
+.no-message {
+    text-align: center;
+    color: #777;
+}
