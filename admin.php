@@ -1,18 +1,6 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_email'])) {
-    header('Location: connexion.php');
-    exit;
-}
-
-$admin_email = 'admin@admin.fr';
-
-if ($_SESSION['user_email'] !== $admin_email) {
-    header('Location: erreur.php');
-    exit;
-}
-
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -26,50 +14,19 @@ try {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
-
-        switch ($action) {
-            case 'add':
-                if (isset($_POST['newCompetence']) && isset($_POST['newNiveau'])) {
-                    $newCompetence = $_POST['newCompetence'];
-                    $newNiveau = $_POST['newNiveau'];
-
-                    $stmt = $conn->prepare("INSERT INTO competence (nom_competence, niv_competence) VALUES (:nom, :niveau)");
-                    $stmt->bindParam(':nom', $newCompetence);
-                    $stmt->bindParam(':niveau', $newNiveau);
-                    $stmt->execute();
-                }
-                break;
-
-            case 'edit':
-                if (isset($_POST['editCompetence']) && isset($_POST['editNiveau'])) {
-                    $editedCompetence = $_POST['editCompetence'];
-                    $editedNiveau = $_POST['editNiveau'];
-
-                    $stmt = $conn->prepare("UPDATE competence SET niv_competence = :niveau WHERE nom_competence = :nom");
-                    $stmt->bindParam(':niveau', $editedNiveau);
-                    $stmt->bindParam(':nom', $editedCompetence);
-                    $stmt->execute();
-                }
-                break;
-
-            case 'delete':
-                if (isset($_POST['deleteCompetence'])) {
-                    $deletedCompetence = $_POST['deleteCompetence'];
-
-                    $stmt = $conn->prepare("DELETE FROM competence WHERE nom_competence = :nom");
-                    $stmt->bindParam(':nom', $deletedCompetence);
-                    $stmt->execute();
-                }
-                break;
-        }
-    }
+// Déplacez les vérifications de session après la connexion à la base de données
+if (!isset($_SESSION['user_email'])) {
+    header('Location: connexion.php');
+    exit;
 }
 
-?>
+$admin_email = 'admin@admin.fr';
 
+if ($_SESSION['user_email'] !== $admin_email) {
+    header('Location: erreur.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -78,10 +35,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord - Portfolio Rolland Dylan</title>
     <link rel="stylesheet" href="./style/style.css">
+
 </head>
 
 <body>
-    <?php include 'navbar.php'; ?>
+    <nav id="desktop-nav">
+        <div class="logo">Dylan Rolland</div>
+        <div>
+            <ul class="nav-links">
+                <?php
+                if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+                    echo '<li><a href="admin.php">Admin</a></li>';
+                } else {
+                    echo '<li><a href="index.php">Portfolio</a></li>';
+                }
+                ?>
+                <li><a href="blog.php">Blog</a></li>
+                <li><a href="contact.php">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
     <h1 class="h1admin">Tableau de bord Admin</h1>
     <section id=profile>
         <div class="profil">
@@ -98,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div id="socials-container">
                     <img src="./assets/linkedin.png" alt="Mon compte Linkedin" class="icon"
                         onclick="location.href='https://www.linkedin.com/in/dylan-rolland-115871293/'" />
-                        <img src="./assets/github.png" alt="Mon Github" class="icon"
+                    <img src="./assets/github.png" alt="Mon Github" class="icon"
                         onclick="location.href='https://github.com/DydyRld'" />
                 </div>
             </div>
@@ -116,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input class="admininput" type="hidden" name="action" value="add">
                 <label class="adminlabel" for="newCompetence">Nouvelle Compétence :</label>
                 <input class="admininput" type="text" name="newCompetence" required>
-                <label class="adminlabel" ²for="newNiveau">Niveau :</label>
+                <label class="adminlabel" for="newNiveau">Niveau :</label>
                 <input class="admininput" type="text" name="newNiveau" required>
                 <button class="adminbutton" type="submit">Ajouter</button>
             </form>
@@ -137,13 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button class="adminbutton" type="submit">Supprimer</button>
             </form>
         </div>
-        
     </section>
+    <section id="projets">
+        <?php
+        require_once 'projet.php';
+        $projet = new Projet($conn);
+        $projets = $projet->getAllProjets();?>
+        </section>
     <br>
-        <hr>
-        <div class="txt-competence">
-            <h1>Projets</h1>
-        </div>
+    <hr>
+
 </body>
 
 </html>

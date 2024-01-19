@@ -119,7 +119,6 @@
         </div>
         <ul class="nav-links-mobile">
             <?php
-            // Vérifie si l'utilisateur est admin
             if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
                 echo '<li><a href="admin.php">Admin</a></li>';
             } else {

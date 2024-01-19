@@ -12,6 +12,7 @@ try {
     exit;
 }
 
+
 class Competence
 {
     private $conn;
