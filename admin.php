@@ -41,7 +41,7 @@ if ($_SESSION['user_email'] !== $admin_email) {
 </head>
 
 <body>
-    
+
 
     <h1 class="h1admin">Tableau de bord Admin</h1>
     <section id=profile>
@@ -83,13 +83,13 @@ if ($_SESSION['user_email'] !== $admin_email) {
             </form>
 
             <form class="adminform" action="admin.php" method="post">
-                <input class="admininput" type="hidden" name="action" value="edit">
-                <label class="adminlabel" for="editCompetence">Modifier Compétence :</label>
-                <input class="admininput" type="text" name="editCompetence" required>
-                <label class="adminlabel" for="editNiveau">Nouveau Niveau :</label>
-                <input class="admininput" type="text" name="editNiveau" required>
-                <button class="adminbutton" type="submit">Modifier</button>
-            </form>
+    <input class="admininput" type="hidden" name="action" value="edit">
+    <label class="adminlabel" for="editCompetence">Modifier Compétence :</label>
+    <input class="admininput" type="text" name="editCompetence" required>
+    <label class="adminlabel" for="editNiveau">Nouveau Niveau :</label>
+    <input class="admininput" type="text" name="editNiveau" required>
+    <button class="adminbutton" type="submit">Modifier</button>
+</form>
 
             <form class="adminform" action="admin.php" method="post">
                 <input class="admininput" type="hidden" name="action" value="delete">
