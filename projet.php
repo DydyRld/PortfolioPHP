@@ -178,40 +178,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 function uploadImage($file)
 {
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($file['name']);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    if (isset($_POST["action"]) && $_POST["action"] === "addProject") {
+        $target_dir = "uploads/";
+        $target_file = $target_dir . basename($file['name']);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    if (isset($_POST["submit"])) {
         $check = getimagesize($file['tmp_name']);
-        if ($check !== false) {
-            $uploadOk = 1;
-        } else {
+        if ($check === false) {
             die("Le fichier n'est pas une image.");
         }
-    }
 
-    if (file_exists($target_file)) {
-        die("Désolé, le fichier existe déjà.");
-    }
-
-    if ($file['size'] > 500000) {
-        die("Désolé, le fichier est trop volumineux.");
-    }
-
-    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
-        die("Désolé, seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés.");
-    }
-
-    if ($uploadOk == 0) {
-        die("Désolé, votre fichier n'a pas été téléchargé.");
-    } else {
-        if (move_uploaded_file($file['tmp_name'], $target_file)) {
-            return $target_file;
-        } else {
-            die("Une erreur s'est produite lors du téléchargement de votre fichier.");
-        }
     }
 }
 ?>
@@ -241,20 +218,23 @@ function uploadImage($file)
                     <p class="projet-description">
                         <?= $projet['description']; ?>
                     </p>
-                    <form method="post" action="">
+                </div>
+                <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr'): ?>
+                    <form class="project-form" method="post" action="">
                         <input type="hidden" name="deleteProjectId" value="<?= $projet['id_projet']; ?>">
-                        <button type="submit" name="action" value="deleteProject">Supprimer</button>
+                        <button type="submit" name="action" value="deleteProject" class="delete-button">Supprimer</button>
                     </form>
-                    <form method="post" action="" enctype="multipart/form-data">
+                    <form class="project-form" method="post" action="" enctype="multipart/form-data">
                         <input type="hidden" name="editProjectId" value="<?= $projet['id_projet']; ?>">
-                        <label for="editProjectTitle">Nouveau Titre:</label>
-                        <input type="text" name="editProjectTitle" value="<?= $projet['titre']; ?>" required>
-                        <label for="editProjectDescription">Nouvelle Description:</label>
-                        <textarea name="editProjectDescription" required><?= $projet['description']; ?></textarea>
+                        <label for="editProjectTitle">Nouveau Titre :</label>
+                        <input type="text" name="editProjectTitle" value="<?= $projet['titre']; ?>" required
+                            class="input-field">
+                        <label for="editProjectDescription">Nouvelle Description :</label>
+                        <textarea name="editProjectDescription" required
+                            class="input-field"><?= $projet['description']; ?></textarea>
 
-                        <!-- Ajoutez cette partie pour la modification de l'image -->
-                        <label for="editProjectImage">Nouvelle Image:</label>
-                        <select name="editProjectImage">
+                        <label for="editProjectImage">Nouvelle Image :</label>
+                        <select name="editProjectImage" class="input-field">
                             <?php
                             $availableImages = $projetInstance->getAvailableImages();
                             foreach ($availableImages as $image) {
@@ -264,28 +244,39 @@ function uploadImage($file)
                             ?>
                         </select>
 
-                        <button type="submit" name="action" value="editProject">Éditer</button>
+                        <button type="submit" name="action" value="editProject" class="edit-button">Éditer</button>
                     </form>
-                </div>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
+
+        <?php if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr'): ?>
+            <div class="add-project-section">
+                <h2>Ajouter un nouveau projet</h2>
+                <form class="project-form" method="post" action="" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="addProject">
+
+                    <label for="newProjectTitle">Titre :</label>
+                    <input type="text" name="newProjectTitle" required class="input-field">
+
+                    <label for="newProjectDescription">Description :</label>
+                    <textarea name="newProjectDescription" required class="input-field"></textarea>
+
+                    <label for="newProjectImage">Image :</label>
+                    <select name="newProjectImage" class="input-field">
+                        <?php
+                        $availableImages = $projetInstance->getAvailableImages();
+                        foreach ($availableImages as $image) {
+                            echo "<option value='$image'>$image</option>";
+                        }
+                        ?>
+                    </select>
+
+                    <button type="submit" class="edit-button">Ajouter</button>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
-    <form method="post" action="" enctype="multipart/form-data">
-        <label for="newProjectTitle">Titre:</label>
-        <input type="text" name="newProjectTitle" required>
-        <label for="newProjectDescription">Description:</label>
-        <textarea name="newProjectDescription" required></textarea>
-        <label for="newProjectImage">Image:</label>
-        <select name="newProjectImage">
-            <?php
-            $availableImages = $projetInstance->getAvailableImages();
-            foreach ($availableImages as $image) {
-                echo "<option value='$image'>$image</option>";
-            }
-            ?>
-        </select>
-        <button type="submit" name="action" value="addProject">Ajouter Projet</button>
-    </form>
 </body>
 
 </html>

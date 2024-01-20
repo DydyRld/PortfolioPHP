@@ -13,23 +13,9 @@ session_start();
 </head>
 
 <body>
-<nav id="desktop-nav">
-        <div class="logo">Dylan Rolland</div>
-        <div>
-            <ul class="nav-links">
-                <?php
-                // Vérifie si l'utilisateur est admin
-                if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
-                    echo '<li><a href="admin.php">Admin</a></li>';
-                } else {
-                    echo '<li><a href="index.php">Portfolio</a></li>';
-                }
-                ?>
-                <li><a href="blog.php">Blog</a></li>
-                <li><a href="contact.php">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+<?php
+include 'navbar.php';
+?>
     <section id=profile>
         <div class="profil">
             <div class="section-pic">
@@ -64,9 +50,6 @@ session_start();
     </section>
     <br>
     <hr>
-    <div class="txt-competence">
-        <h1>Projets</h1>
-    </div>
     <?php
         include 'projet.php';
     
