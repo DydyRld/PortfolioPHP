@@ -1,4 +1,8 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 class Article
 {
     private $id;
@@ -21,10 +25,11 @@ class Article
     {
         return $this->title;
     }
+
     public function setContent($content)
-{
-    $this->content = $content;
-}
+    {
+        $this->content = $content;
+    }
 
     public function getContent()
     {
@@ -46,4 +51,3 @@ class Article
         $this->datePublished = $datePublished;
     }
 }
-

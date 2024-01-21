@@ -14,7 +14,6 @@ try {
     exit;
 }
 
-// Déplacez les vérifications de session après la connexion à la base de données
 if (!isset($_SESSION['user_email'])) {
     header('Location: connexion.php');
     exit;
@@ -27,7 +26,6 @@ if ($_SESSION['user_email'] !== $admin_email) {
     exit;
 }
 
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -37,11 +35,26 @@ if ($_SESSION['user_email'] !== $admin_email) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de bord - Portfolio Rolland Dylan</title>
     <link rel="stylesheet" href="./style/style.css">
-
+    <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token']; ?>">
 </head>
 
 <body>
-
+    <nav id="desktop-nav">
+        <div class="logo">Dylan Rolland</div>
+        <div>
+            <ul class="nav-links">
+                <?php
+                if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+                    echo '<li><a href="admin.php">Admin</a></li>';
+                } else {
+                    echo '<li><a href="index.php">Portfolio</a></li>';
+                }
+                ?>
+                <li><a href="blog.php">Blog</a></li>
+                <li><a href="contact.php">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <h1 class="h1admin">Tableau de bord Admin</h1>
     <section id=profile>
@@ -74,6 +87,7 @@ if ($_SESSION['user_email'] !== $admin_email) {
         <div class="container-competences">
             <?php include 'competence.php'; ?>
             <form class="adminform" action="admin.php" method="post">
+                <input class="admininput" type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input class="admininput" type="hidden" name="action" value="add">
                 <label class="adminlabel" for="newCompetence">Nouvelle Compétence :</label>
                 <input class="admininput" type="text" name="newCompetence" required>
@@ -83,15 +97,17 @@ if ($_SESSION['user_email'] !== $admin_email) {
             </form>
 
             <form class="adminform" action="admin.php" method="post">
-    <input class="admininput" type="hidden" name="action" value="edit">
-    <label class="adminlabel" for="editCompetence">Modifier Compétence :</label>
-    <input class="admininput" type="text" name="editCompetence" required>
-    <label class="adminlabel" for="editNiveau">Nouveau Niveau :</label>
-    <input class="admininput" type="text" name="editNiveau" required>
-    <button class="adminbutton" type="submit">Modifier</button>
-</form>
+                <input class="admininput" type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                <input class="admininput" type="hidden" name="action" value="edit">
+                <label class="adminlabel" for="editCompetence">Modifier Compétence :</label>
+                <input class="admininput" type="text" name="editCompetence" required>
+                <label class="adminlabel" for="editNiveau">Nouveau Niveau :</label>
+                <input class="admininput" type="text" name="editNiveau" required>
+                <button class="adminbutton" type="submit">Modifier</button>
+            </form>
 
             <form class="adminform" action="admin.php" method="post">
+                <input class="admininput" type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input class="admininput" type="hidden" name="action" value="delete">
                 <label class="adminlabel" for="deleteCompetence">Supprimer Compétence :</label>
                 <input class="admininput" type="text" name="deleteCompetence" required>

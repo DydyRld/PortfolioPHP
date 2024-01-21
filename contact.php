@@ -18,39 +18,39 @@ class Contact
     }
 
     public function getMessagesHTML()
-{
-    $resultat = $this->database->getMessages();
+    {
+        $resultat = $this->database->getMessages();
 
-    if ($resultat === "") {
-        return '';
-    }
-
-    $messagesHTML = "";
-
-    // Ajoutez des messages de débogage ici
-    if (!($resultat instanceof PDOStatement)) {
-        die("La requête ne renvoie pas un objet PDOStatement valide. Erreur: " . print_r($resultat, true));
-    }
-
-    while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
-        $messagesHTML .= "<div class='message-container'>";
-        $messagesHTML .= "<p class='user-email'><strong>Email:</strong> " . $row["email"] . "</p>";
-        $messagesHTML .= "<p class='user-message'><strong>Message:</strong> " . $row["message"] . "</p>";
-        $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . $row["date_mess"] . "</p>";
-
-        if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
-            $messagesHTML .= "<form method='post' action=''>
-                            <input type='hidden' name='messageIdToDelete' value='{$row["id_mess"]}'>
-                            <button type='submit' class='delete-button'>Supprimer</button>
-                          </form>";
+        if ($resultat === "") {
+            return '';
         }
 
-        $messagesHTML .= "</div>";
-        $messagesHTML .= "<hr class='message-divider'>";
-    }
+        $messagesHTML = "";
 
-    return $messagesHTML;
-}
+        // Ajoutez des messages de débogage ici
+        if (!($resultat instanceof PDOStatement)) {
+            die("La requête ne renvoie pas un objet PDOStatement valide. Erreur: " . print_r($resultat, true));
+        }
+
+        while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
+            $messagesHTML .= "<div class='message-container'>";
+            $messagesHTML .= "<p class='user-email'><strong>Email:</strong> " . htmlspecialchars($row["email"]) . "</p>";
+            $messagesHTML .= "<p class='user-message'><strong>Message:</strong> " . htmlspecialchars($row["message"]) . "</p>";
+            $messagesHTML .= "<p class='message-date'><strong>Publié le</strong> " . htmlspecialchars($row["date_mess"]) . "</p>";
+
+            if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+                $messagesHTML .= "<form method='post' action=''>
+                                <input type='hidden' name='messageIdToDelete' value='" . htmlspecialchars($row["id_mess"]) . "'>
+                                <button type='submit' class='delete-button'>Supprimer</button>
+                              </form>";
+            }
+
+            $messagesHTML .= "</div>";
+            $messagesHTML .= "<hr class='message-divider'>";
+        }
+
+        return $messagesHTML;
+    }
 
     public function deleteMessage($messageId)
     {
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userMessage'])) {
     if ($insertResult) {
         echo '<div style="color: green;">Votre message a été envoyé avec succès.</div>';
     } else {
-        echo '<p style="color: red;">Erreur lors de l\'insertion du message. $insertResult : ' . var_export($insertResult, true) . '</p>';
+        echo '<p style="color: red;">Erreur lors de l\'insertion du message. $insertResult : ' . htmlspecialchars(var_export($insertResult, true)) . '</p>';
     }
 }
 

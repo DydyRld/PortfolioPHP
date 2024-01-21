@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,13 +13,13 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Rolland Dylan</title>
     <link rel="stylesheet" href="./style/style.css">
+    <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token']; ?>">
 </head>
 
 <body>
-<?php
-include 'navbar.php';
-?>
-    <section id=profile>
+    <?php include 'navbar.php'; ?>
+
+    <section id="profile">
         <div class="profil">
             <div class="section-pic">
                 <img class="imgpdp" src="./assets/photodeprofildylan.png" alt="Rolland Dylan Photo de profil">
@@ -36,8 +39,8 @@ include 'navbar.php';
                 </div>
             </div>
         </div>
-        </div>
     </section>
+
     <section id="competences">
         <br>
         <hr>
@@ -50,10 +53,9 @@ include 'navbar.php';
     </section>
     <br>
     <hr>
-    <?php
-        include 'projet.php';
-    
-    ?>
+
+    <?php include 'projet.php'; ?>
+
 </body>
 
 </html>
