@@ -1,8 +1,11 @@
 <?php
 session_start();
+
+// Génération du jeton CSRF s'il n'existe pas
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +16,7 @@ if (!isset($_SESSION['csrf_token'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Rolland Dylan</title>
     <link rel="stylesheet" href="./style/style.css">
-    <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token']; ?>">
+    <meta name="csrf-token" content="<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
 </head>
 
 <body>
@@ -29,9 +32,11 @@ if (!isset($_SESSION['csrf_token'])) {
                 <h1 class="title">Rolland Dylan</h1>
                 <p class="txtp2">B2 Informatique</p>
                 <div class="btn-container">
-                    <button class="btn buttoncv" onclick="window.open('./assets/CV-RollandDylan.pdf')">Mon CV</button>
+                    <!-- Utilisation du jeton CSRF dans l'URL -->
+                    <button class="btn buttoncv" onclick="window.open('./assets/CV-RollandDylan.pdf?csrf=<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>')">Mon CV</button>
                 </div>
                 <div id="socials-container">
+                    <!-- Utilisation de htmlspecialchars pour les attributs href -->
                     <img src="./assets/linkedin.png" alt="Mon compte Linkedin" class="icon"
                         onclick="location.href='https://www.linkedin.com/in/dylan-rolland-115871293/'" />
                     <img src="./assets/github.png" alt="Mon Github" class="icon"

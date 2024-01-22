@@ -1,5 +1,7 @@
 <?php
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -36,8 +38,8 @@ class Competence
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $competence = array(
                 'id_competence' => $row['id_competence'],
-                'nom_competence' => $row['nom_competence'],
-                'niv_competence' => $row['niv_competence'],
+                'nom_competence' => htmlspecialchars($row['nom_competence'], ENT_QUOTES, 'UTF-8'),
+                'niv_competence' => htmlspecialchars($row['niv_competence'], ENT_QUOTES, 'UTF-8'),
             );
             $competences[] = $competence;
         }
@@ -49,39 +51,44 @@ class Competence
     {
         $sql = "INSERT INTO competence (nom_competence, niv_competence) VALUES (?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$nom, $niveau]);
+        $stmt->execute([htmlspecialchars($nom, ENT_QUOTES, 'UTF-8'), htmlspecialchars($niveau, ENT_QUOTES, 'UTF-8')]);
     }
 
     public function editCompetence($nom, $niveau)
-{
-    // Recherche de l'ID de la compétence en fonction du nom
-    $sqlSelectId = "SELECT id_competence FROM competence WHERE nom_competence = ?";
-    $stmtSelectId = $this->conn->prepare($sqlSelectId);
-    $stmtSelectId->execute([$nom]);
+    {
+        $sqlSelectId = "SELECT id_competence FROM competence WHERE LOWER(nom_competence) = LOWER(?)";
+        $stmtSelectId = $this->conn->prepare($sqlSelectId);
+        $stmtSelectId->execute([htmlspecialchars($nom, ENT_QUOTES, 'UTF-8')]);
 
-    $row = $stmtSelectId->fetch(PDO::FETCH_ASSOC);
-    $id_competence = $row['id_competence'];
+        if ($stmtSelectId) {
+            $row = $stmtSelectId->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                $id_competence = $row['id_competence'];
 
-    // Mise à jour de la compétence en utilisant l'ID
-    $sqlUpdate = "UPDATE competence SET niv_competence = ? WHERE id_competence = ?";
-    $stmtUpdate = $this->conn->prepare($sqlUpdate);
-    $stmtUpdate->execute([$niveau, $id_competence]);
-}
-public function deleteCompetence($nom)
-{
-    // Recherche de l'ID de la compétence en fonction du nom
-    $sqlSelectId = "SELECT id_competence FROM competence WHERE nom_competence = ?";
-    $stmtSelectId = $this->conn->prepare($sqlSelectId);
-    $stmtSelectId->execute([$nom]);
+                $sqlUpdate = "UPDATE competence SET niv_competence = ? WHERE id_competence = ?";
+                $stmtUpdate = $this->conn->prepare($sqlUpdate);
+                $result = $stmtUpdate->execute([htmlspecialchars($niveau, ENT_QUOTES, 'UTF-8'), $id_competence]);
+            }
+        }
+    }
 
-    $row = $stmtSelectId->fetch(PDO::FETCH_ASSOC);
-    $id_competence = $row['id_competence'];
+    public function deleteCompetence($nom)
+    {
+        $sqlSelectId = "SELECT id_competence FROM competence WHERE LOWER(nom_competence) = LOWER(?)";
+        $stmtSelectId = $this->conn->prepare($sqlSelectId);
+        $stmtSelectId->execute([htmlspecialchars($nom, ENT_QUOTES, 'UTF-8')]);
 
-    // Suppression de la compétence en utilisant l'ID
-    $sqlDelete = "DELETE FROM competence WHERE id_competence = ?";
-    $stmtDelete = $this->conn->prepare($sqlDelete);
-    $stmtDelete->execute([$id_competence]);
-}
+        if ($stmtSelectId) {
+            $row = $stmtSelectId->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                $id_competence = $row['id_competence'];
+
+                $sqlDelete = "DELETE FROM competence WHERE id_competence = ?";
+                $stmtDelete = $this->conn->prepare($sqlDelete);
+                $result = $stmtDelete->execute([$id_competence]);
+            }
+        }
+    }
 }
 
 $competenceInstance = new Competence($conn);
@@ -108,18 +115,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             break;
 
         default:
-            // Gérez les autres actions ou actions invalides
             break;
     }
 }
 
 $competences = $competenceInstance->getAllCompetences();
+?>
 
-echo "<div class='divcompetence'>";
-foreach ($competences as $competence) {
-    echo "<p>";
-    echo $competence['nom_competence'] . "<br>";
-    echo $competence['niv_competence'] . "<br>";
-    echo "</p>";
-}
-echo "</div>";
+<div class='divcompetence'>
+    <?php foreach ($competences as $competence): ?>
+        <p>
+            <?php echo $competence['nom_competence'] . "<br>"; ?>
+            <?php echo $competence['niv_competence'] . "<br>"; ?>
+        </p>
+    <?php endforeach; ?>
+</div>

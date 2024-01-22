@@ -27,11 +27,6 @@ class Contact
 
         $messagesHTML = "";
 
-        // Ajoutez des messages de débogage ici
-        if (!($resultat instanceof PDOStatement)) {
-            die("La requête ne renvoie pas un objet PDOStatement valide. Erreur: " . print_r($resultat, true));
-        }
-
         while ($row = $resultat->fetch(PDO::FETCH_ASSOC)) {
             $messagesHTML .= "<div class='message-container'>";
             $messagesHTML .= "<p class='user-email'><strong>Email:</strong> " . htmlspecialchars($row["email"]) . "</p>";
@@ -69,7 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userMessage'])) {
     } else {
         if (isset($_POST['userEmail'])) {
             $userEmail = $_POST['userEmail'];
-            $insertResult = $contact->insertMessage($userEmail, $userMessage);
+
+            // Validation de l'adresse e-mail côté serveur
+            if (filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
+                $insertResult = $contact->insertMessage($userEmail, $userMessage);
+            } else {
+                echo '<p style="color: red;">Veuillez fournir une adresse e-mail valide.</p>';
+                exit;
+            }
         } else {
             echo '<p style="color: red;">Veuillez fournir une adresse e-mail pour envoyer un message.</p>';
             exit;
@@ -79,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userMessage'])) {
     if ($insertResult) {
         echo '<div style="color: green;">Votre message a été envoyé avec succès.</div>';
     } else {
-        echo '<p style="color: red;">Erreur lors de l\'insertion du message. $insertResult : ' . htmlspecialchars(var_export($insertResult, true)) . '</p>';
+        echo '<p style="color: red;">Erreur lors de l\'insertion du message.</p>';
     }
 }
 
@@ -112,7 +114,7 @@ $database->closeConnection();
 
     <?php include_once 'navbar.php'; ?>
 
-    <div class="container">
+    <div class="containercontact">
         <h1>Contactez-moi</h1>
 
         <?php
@@ -122,6 +124,7 @@ $database->closeConnection();
             <label for="userMessage">Votre message :</label>
             <textarea id="userMessage" name="userMessage" rows="4" cols="50" required></textarea>
             <button type="submit" class="submit-button">Envoyer</button>
+            <input type="hidden" name="csrf_token" value="' . htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') . '">
         </form>';
         ?>
 

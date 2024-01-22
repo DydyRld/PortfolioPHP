@@ -1,3 +1,16 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start(); 
+}
+
+$user_email = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : '';
+
+// Fonction pour échapper les données HTML
+function escapeHtml($value) {
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -92,12 +105,11 @@
 
     <!-- Navbar pour desktop -->
     <nav id="desktop-nav">
-        <div class="logo">Dylan Rolland</div>
+        <div class="logo"><?php echo escapeHtml('Dylan Rolland'); ?></div>
         <div>
             <ul class="nav-links">
                 <?php
-                // Vérifie si l'utilisateur est admin
-                if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+                if ($user_email === 'admin@admin.fr') {
                     echo '<li><a href="admin.php">Admin</a></li>';
                 } else {
                     echo '<li><a href="index.php">Portfolio</a></li>';
@@ -111,7 +123,7 @@
 
     <!-- Navbar pour mobile -->
     <nav id="mobile-nav">
-        <div class="logo-mobile">Dylan Rolland</div>
+        <div class="logo-mobile"><?php echo escapeHtml('Dylan Rolland'); ?></div>
         <div class="burger-menu" onclick="toggleMobileMenu()">
             <div class="bar"></div>
             <div class="bar"></div>
@@ -119,7 +131,7 @@
         </div>
         <ul class="nav-links-mobile">
             <?php
-            if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+            if ($user_email === 'admin@admin.fr') {
                 echo '<li><a href="admin.php">Admin</a></li>';
             } else {
                 echo '<li><a href="index.php">Portfolio</a></li>';

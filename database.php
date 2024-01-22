@@ -14,9 +14,10 @@ class Database
             $this->conn = new PDO("mysql:host=$host;dbname=$database", $username, $password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données : " . $e->getMessage());
+            error_log("Erreur de connexion à la base de données : " . $e->getMessage());
         }
     }
+
     public function insertArticle(Article $article)
     {
         try {
@@ -30,7 +31,8 @@ class Database
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            die("Erreur d'insertion de l'article : " . $e->getMessage());
+            error_log("Erreur d'insertion de l'article : " . $e->getMessage());
+            return false;
         }
     }
 
@@ -45,35 +47,37 @@ class Database
             if ($stmt->execute()) {
                 return true;
             } else {
-                // Afficher les informations sur l'erreur
-                var_dump($stmt->errorInfo());
+                error_log("Erreur lors de l'insertion du message : " . print_r($stmt->errorInfo(), true));
                 return false;
             }
         } catch (PDOException $e) {
-            die("Erreur d'insertion du message : " . $e->getMessage());
+            error_log("Erreur d'insertion du message : " . $e->getMessage());
+            return false;
         }
     }
 
     public function getMessages()
-{
-    try {
-        if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
-            $resultat = $this->conn->query("SELECT contact.message, contact.date_mess, contact.mail as email, contact.id_mess
-                                       FROM contact");
+    {
+        try {
+            if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
+                $resultat = $this->conn->query("SELECT contact.message, contact.date_mess, contact.mail as email, contact.id_mess
+                                               FROM contact");
 
-            // Ajoutez ces messages de débogage
-            if (!$resultat) {
-                die("Erreur dans la requête SQL : " . print_r($this->conn->errorInfo(), true));
+                if (!$resultat) {
+                    error_log("Erreur dans la requête SQL : " . print_r($this->conn->errorInfo(), true));
+                    return false;
+                }
+
+                return $resultat; 
+            } else {
+                return "";
             }
-
-            return $resultat; // Retournez directement le résultat sans vérifier son type
-        } else {
-            return "";
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des messages : " . $e->getMessage());
+            return false;
         }
-    } catch (PDOException $e) {
-        die("Erreur lors de la récupération des messages : " . $e->getMessage());
     }
-}
+
     public function deleteArticle($articleId)
     {
         try {
@@ -83,9 +87,11 @@ class Database
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            die("Erreur de suppression de l'article : " . $e->getMessage());
+            error_log("Erreur de suppression de l'article : " . $e->getMessage());
+            return false;
         }
     }
+
     public function updateArticle($articleId, $newTitle, $newContent)
     {
         try {
@@ -97,7 +103,8 @@ class Database
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            die("Erreur lors de la mise à jour de l'article : " . $e->getMessage());
+            error_log("Erreur lors de la mise à jour de l'article : " . $e->getMessage());
+            return false;
         }
     }
 
@@ -110,7 +117,8 @@ class Database
 
             return $stmt->execute();
         } catch (PDOException $e) {
-            die("Erreur lors de la suppression du message : " . $e->getMessage());
+            error_log("Erreur lors de la suppression du message : " . $e->getMessage());
+            return false;
         }
     }
 

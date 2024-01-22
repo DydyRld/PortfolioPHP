@@ -1,33 +1,44 @@
 <?php
-session_start(); // Démarre la session
+session_start();
 
 require_once 'database.php';
 require_once 'user.php';
 
+// Régénération du jeton CSRF à chaque chargement de la page
+$csrfToken = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : bin2hex(random_bytes(32));
+$_SESSION['csrf_token'] = $csrfToken;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    // Vérification du jeton CSRF
+    if (isset($_POST['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-    $db = new Database("localhost", "root", "", "portfoliophp");
-    $user = new User($db);
+        $db = new Database("localhost", "root", "", "portfoliophp");
+        $user = new User($db);
 
-    $user_data = $user->getUserByEmail($email);
+        $user_data = $user->getUserByEmail($email);
 
-    if ($user_data && password_verify($password, $user_data['password'])) {
-        $_SESSION['user_email'] = $email;
-        $_SESSION['id_user'] = $user_data['id_user']; // Ajout de l'ID de l'utilisateur dans la session
+        if ($user_data && password_verify($password, $user_data['password'])) {
+            // Régénérer l'ID de session après la connexion réussie
+            session_regenerate_id();
 
-        if ($email === 'admin@admin.fr') {
-            // Si l'utilisateur est l'administrateur, redirige vers admin.php
-            header("Location: admin.php");
-            exit();
+            $_SESSION['user_email'] = $email;
+            $_SESSION['id_user'] = $user_data['id_user'];
+
+            if ($email === 'admin@admin.fr') {
+                header("Location: admin.php");
+                exit();
+            } else {
+                $success_message = "Identifiants corrects";
+                header("Location: index.php");
+                exit();
+            }
         } else {
-            $success_message = "Identifiants corrects";
-            header("Location: index.php");
-            exit();
+            $error_message = "Identifiants incorrects";
         }
     } else {
-        $error_message = "Identifiants incorrects";
+        $error_message = "Erreur CSRF : Jeton CSRF invalide.";
     }
 }
 ?>
@@ -43,25 +54,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-    <?php
-    include_once 'navbar.php'
-    ?>
+    <?php include_once 'navbar.php'; ?>
+    
     <form action="" method="post">
         <h2>Connexion</h2>
 
         <?php
         if (isset($error_message)) {
-            echo '<p class="error">' . $error_message . '</p>';
+            echo '<p class="error">Erreur lors de la connexion.</p>';
         } elseif (isset($success_message)) {
             echo '<p class="success">' . $success_message . '</p>';
         }
         ?>
 
-        <label for="email">Email:</label>
+        <label for="email">Email :</label>
         <input type="email" name="email" required><br>
 
-        <label for="password">Mot de passe:</label>
+        <label for="password">Mot de passe :</label>
         <input type="password" name="password" required><br>
+
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
 
         <input type="submit" value="Se connecter">
     </form>

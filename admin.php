@@ -14,6 +14,10 @@ try {
     exit;
 }
 
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Génération d'un token CSRF aléatoire
+}
+
 if (!isset($_SESSION['user_email'])) {
     header('Location: connexion.php');
     exit;
@@ -25,8 +29,8 @@ if ($_SESSION['user_email'] !== $admin_email) {
     header('Location: erreur.php');
     exit;
 }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -39,22 +43,7 @@ if ($_SESSION['user_email'] !== $admin_email) {
 </head>
 
 <body>
-    <nav id="desktop-nav">
-        <div class="logo">Dylan Rolland</div>
-        <div>
-            <ul class="nav-links">
-                <?php
-                if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
-                    echo '<li><a href="admin.php">Admin</a></li>';
-                } else {
-                    echo '<li><a href="index.php">Portfolio</a></li>';
-                }
-                ?>
-                <li><a href="blog.php">Blog</a></li>
-                <li><a href="contact.php">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+    <?php include 'navbar.php';?>
 
     <h1 class="h1admin">Tableau de bord Admin</h1>
     <section id=profile>
@@ -119,12 +108,10 @@ if ($_SESSION['user_email'] !== $admin_email) {
         <?php
         include 'projet.php';
         ?>
-
     </section>
 
     <br>
     <hr>
-
 </body>
 
 </html>
