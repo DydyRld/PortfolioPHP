@@ -1,15 +1,15 @@
 <?php
+//Démarrage de la session
 session_start();
 
 require_once 'database.php';
 require_once 'user.php';
 
-// Régénération du jeton CSRF à chaque chargement de la page
+// Générer le token CSRF
 $csrfToken = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : bin2hex(random_bytes(32));
 $_SESSION['csrf_token'] = $csrfToken;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérification du jeton CSRF
     if (isset($_POST['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $email = $_POST['email'];
         $password = $_POST['password'];
@@ -20,7 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user_data = $user->getUserByEmail($email);
 
         if ($user_data && password_verify($password, $user_data['password'])) {
-            // Régénérer l'ID de session après la connexion réussie
             session_regenerate_id();
 
             $_SESSION['user_email'] = $email;
@@ -42,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
+<!-- Page de connexion -->
 <!DOCTYPE html>
 <html lang="en">
 

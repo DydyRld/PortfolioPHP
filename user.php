@@ -1,5 +1,6 @@
 <?php
 
+//Classe user et ses fonctions
 class User {
     private $db;
 

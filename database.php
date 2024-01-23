@@ -1,4 +1,6 @@
 <?php
+
+//Classe database et ses fonctions
 class Database
 {
     private $conn;
@@ -18,6 +20,7 @@ class Database
         }
     }
 
+    //Fonction pour ajouter des blogs
     public function insertArticle(Article $article)
     {
         try {
@@ -35,6 +38,7 @@ class Database
             return false;
         }
     }
+    //Fonction pour ajouter un message de contact
 
     public function insertMessage($userEmail, $userMessage)
     {
@@ -55,7 +59,7 @@ class Database
             return false;
         }
     }
-
+    //Fonction pour faire apparaître les messages
     public function getMessages()
     {
         try {
@@ -77,7 +81,7 @@ class Database
             return false;
         }
     }
-
+    //Fonction pour supprimer un blog
     public function deleteArticle($articleId)
     {
         try {
@@ -91,7 +95,7 @@ class Database
             return false;
         }
     }
-
+    //Fonction pour modifier le blog
     public function updateArticle($articleId, $newTitle, $newContent)
     {
         try {
@@ -107,7 +111,7 @@ class Database
             return false;
         }
     }
-
+    //Fonction pour supprimer le message
     public function deleteMessage($messageId)
     {
         try {
@@ -121,6 +125,7 @@ class Database
             return false;
         }
     }
+    //Fonction pour faire apparaître les blogs de la BDD.
 
     public function getArticlesFromDatabase()
     {

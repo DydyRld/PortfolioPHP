@@ -15,6 +15,7 @@ try {
     exit;
 }
 
+//Classe compétence et fonctions
 class Competence
 {
     private $conn;
@@ -46,13 +47,15 @@ class Competence
 
         return $competences;
     }
-
+    
+//Fonction ajout de compétences
     public function addCompetence($nom, $niveau)
     {
         $sql = "INSERT INTO competence (nom_competence, niv_competence) VALUES (?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([htmlspecialchars($nom, ENT_QUOTES, 'UTF-8'), htmlspecialchars($niveau, ENT_QUOTES, 'UTF-8')]);
     }
+//Fonction modification de compétences
 
     public function editCompetence($nom, $niveau)
     {
@@ -71,6 +74,7 @@ class Competence
             }
         }
     }
+//Fonction suppression de compétences
 
     public function deleteCompetence($nom)
     {
@@ -121,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $competences = $competenceInstance->getAllCompetences();
 ?>
-
+<!-- Affichage des compétences -->
 <div class='divcompetence'>
     <?php foreach ($competences as $competence): ?>
         <p>

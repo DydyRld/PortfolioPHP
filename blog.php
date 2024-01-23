@@ -1,5 +1,9 @@
 <?php
+// Démarrage de la session
+
 session_start();
+
+// Génération d'un jeton CSRF ou récupération du jeton existant depuis la session
 
 $csrfToken = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : bin2hex(random_bytes(32));
 $_SESSION['csrf_token'] = $csrfToken;
@@ -17,12 +21,18 @@ $_SESSION['csrf_token'] = $csrfToken;
 
 <body>
     <?php
+    // Inclusion de la barre de navigation
+    
     include_once 'navbar.php';
-
+    // Inclusion des classes nécessaires
+    
     require_once 'article.php';
     require_once 'database.php';
+    // Connexion à la base de données
 
     $database = new Database('localhost', 'root', '', 'portfoliophp');
+        
+    // Traitement du formulaire d'ajout d'article
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['title']) && !empty($_POST['content'])) {
         if (isset($_POST['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -38,6 +48,8 @@ $_SESSION['csrf_token'] = $csrfToken;
             echo "Erreur CSRF : Jeton CSRF invalide.";
         }
     }
+        // Traitement du formulaire de suppression d'article
+
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
         if (isset($_POST['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -64,6 +76,9 @@ $_SESSION['csrf_token'] = $csrfToken;
     }
 
     $articlesFromDB = $database->getArticlesFromDatabase();
+
+        // Affichage des articles
+
 
     foreach ($articlesFromDB as $article) {
         $id = $article->getId();
@@ -92,9 +107,11 @@ $_SESSION['csrf_token'] = $csrfToken;
 
         echo "</div>";
     }
+        // Formulaire d'ajout d'article pour l'administrateur
+
 
     if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === 'admin@admin.fr') {
-        
+
         echo "<form class='custom-form' method='post' action=''>
         <p class='ajtblogp'>Ajouter un nouveau blog</p>
             <input type='hidden' name='csrf_token' value='" . htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8') . "'>

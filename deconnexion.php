@@ -7,3 +7,4 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
 header("Location: index.php");
 exit();
+//Page qui permet de déconnecter l'utilisateur ou admin

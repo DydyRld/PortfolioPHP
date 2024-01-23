@@ -6,6 +6,7 @@ $username = "root";
 $password = "";
 $dbname = "portfoliophp";
 
+//Connexion à la BDD
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -30,7 +31,7 @@ if ($_SESSION['user_email'] !== $admin_email) {
     exit;
 }
 ?>
-
+<!-- Visuel du site ainsi que include des fichiers utiles -->
 <!DOCTYPE html>
 <html lang="fr">
 

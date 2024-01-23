@@ -4,6 +4,8 @@ session_start();
 if (session_status() === PHP_SESSION_ACTIVE) {
     session_destroy();
 }
+
+//Page qui permet de rickroll l'utilisateur qui essaye de se connecter sans autorisation
 ?>
 <!DOCTYPE html>
 <html lang="fr">

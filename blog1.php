@@ -1,6 +1,7 @@
 <?php
 require_once 'database.php';
 
+//Classe blog et ses fonctions
 class Blog {
     private $database;
 

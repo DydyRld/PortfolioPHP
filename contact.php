@@ -3,6 +3,7 @@ session_start();
 
 require_once 'database.php';
 
+//Classe contact et ses fonctions
 class Contact
 {
     private $database;
@@ -16,7 +17,7 @@ class Contact
     {
         return $this->database->insertMessage($userEmail, $userMessage);
     }
-
+    //Récupération des messages de contact
     public function getMessagesHTML()
     {
         $resultat = $this->database->getMessages();
@@ -46,6 +47,8 @@ class Contact
 
         return $messagesHTML;
     }
+
+    //Fonctions pour supprimer les messagesp our l'admin
 
     public function deleteMessage($messageId)
     {

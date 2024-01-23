@@ -7,7 +7,7 @@ if (!isset($_SESSION['csrf_token'])) {
 }
 
 ?>
-
+<!-- Page index pas admin -->
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -36,7 +36,6 @@ if (!isset($_SESSION['csrf_token'])) {
                     <button class="btn buttoncv" onclick="window.open('./assets/CV-RollandDylan.pdf?csrf=<?= htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>')">Mon CV</button>
                 </div>
                 <div id="socials-container">
-                    <!-- Utilisation de htmlspecialchars pour les attributs href -->
                     <img src="./assets/linkedin.png" alt="Mon compte Linkedin" class="icon"
                         onclick="location.href='https://www.linkedin.com/in/dylan-rolland-115871293/'" />
                     <img src="./assets/github.png" alt="Mon Github" class="icon"

@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
+//Classe article ainsi que ses fonctions
 class Article
 {
     private $id;
